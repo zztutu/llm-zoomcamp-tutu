@@ -24,7 +24,7 @@ class RAGBase:
         instructions=INSTRUCTIONS,
         prompt_template=PROMPT_TEMPLATE,
         course='llm-zoomcamp',
-        model='gpt-5.4-mini'
+        model='deepseek-chat'
     ):
         self.index = index
         self.llm_client = llm_client
@@ -63,16 +63,16 @@ class RAGBase:
 
     def llm(self, prompt):
         input_messages = [
-            {'role': 'developer', 'content': self.instructions},
+            {'role': 'system', 'content': self.instructions},
             {'role': 'user', 'content': prompt}
         ]
 
-        response = self.llm_client.responses.create(
+        response = self.llm_client.chat.completions.create(
             model=self.model,
-            input=input_messages
+            messages=input_messages
         )
 
-        return response.output_text
+        return response.choices[0].message.content
 
     def rag(self, query):
         search_results = self.search(query)
